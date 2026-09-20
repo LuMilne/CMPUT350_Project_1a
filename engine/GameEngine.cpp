@@ -29,16 +29,51 @@ void GameEngine::Run() {
     while (true)  // window is open
     {
         // 0. Remove any objects that are now dead
+        //? for (obj : gameObjects) { checkjRemove }
 
         // 1. Activate and initialize any objects added during the last frame
 
         // 2. Process events
+        /* Example Code from Project1a doc
+        if (const auto* keyPressed = event->getIf<sf::Event::TextEntered>())
+        {
+            if (keyPressed->unicode == 'p')
+            // do something here
+        }
+        */
+        if (const auto* keyPressed = event->getIf<sf::Event::TextEntered>())
+        {
+            if (keyPressed->unicode == 'a') {
+
+            }
+            else if (keyPressed->unicode == 'd') {
+                
+            }
+            if (keyPressed->unicode == ' ') {    // Verify this functions as correct input
+                
+            }
+            
+        }
+
 
         // 3. Update game objects
+        //? for (obj : game_objects) { obj->update() }
 
         // 4. Process collision events
+        /* Example Code from Project1a doc
+        std::shared_ptr<CollisionObject> objA = std::dynamic_pointer_cast<CollisionObject>(mGameObjects[a]);
+        if (objA == nullptr)
+            continue; // Not a collision object, skip
+        */
+        /*
+        Collision Events:
+            Bullet --> Enemy  (note: bullet object is source-independent. DON'T SHOOT YOURSELF)
+            Bullet --> Player (later project phase?)
+            Enemy --> Player (later project phase)
+        */
 
         // 5. Late updates
+        //? for (obj : game_objects) { obj->LateUpdate() }
 
         // Clear window
 

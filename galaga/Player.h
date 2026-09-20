@@ -25,6 +25,7 @@ public:
     void CollisionEnter(const std::shared_ptr<CMPUT350::CollisionObject>& obj) override;
     const CMPUT350::Rect& GetBounds() override;
 
+    // Player size: 40*40 pixels
 };
 
 #endif
