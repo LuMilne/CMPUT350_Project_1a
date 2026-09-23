@@ -87,8 +87,7 @@ static std::ostream &operator<<(std::ostream &os, const Point2D &p) {
 }
 
 static Point2D operator*(float number, const Point2D &rhs) {
-    // TODO: write this code
-    return rhs;
+    return {rhs.x * number, rhs.y * number};
 }
 
 struct Line {
