@@ -3,8 +3,10 @@
 /// @brief
 namespace CMPUT350 {
 #include "FontData.h"
+#include <vector>
 
 GameEngine::GameEngine(unsigned int width, unsigned int height, const std::string& name) {
+
     // Sample font loading code
     //	if (!mFont->openFromMemory(&_font, _font_len))
     //	{
@@ -17,7 +19,9 @@ GameEngine::~GameEngine() {
     // mWindow->close();
 }
 
-void GameEngine::AddGameObject(std::shared_ptr<GameObject> gameObject) {}
+void GameEngine::AddGameObject(std::shared_ptr<GameObject> gameObject) {
+    gameObjects.push_back(gameObject);
+}
 
 /**
  * @method Run
@@ -29,9 +33,23 @@ void GameEngine::Run() {
     while (true)  // window is open
     {
         // 0. Remove any objects that are now dead
-        //? for (obj : gameObjects) { checkjRemove }
+        for( auto i = gameObjects.begin(); i != gameObjects.end() ) {
+            if( !(*i)->IsAlive() ) {    // Dereferencing pointer to pointer. Blegh. Cleaner way to do this?
+                gameObjects.erase(i);
+            }
+            else i++;
+        }
 
         // 1. Activate and initialize any objects added during the last frame
+        while( !incomingObjects.empty() ) {
+            // Source: https://stackoverflow.com/questions/17436970/how-do-i-move-a-shared-ptr-object-between-containers-with-move-semantics
+            // Time: 09/24/2026, 12:25pm
+            // Referenced user quant's implementation of user David Schwartz' solution for passing shared_ptr between vectors
+            incomingObjects.back()->Initialize();   //TODO: Implement GameContext
+            gameObjects.push_back(std::move(incomingObjects.back()));
+            assert(incomingObjects.back() == nullptr);
+            incomingObjects.pop_back();
+        }
 
         // 2. Process events
         /* Example Code from Project1a doc
@@ -57,7 +75,9 @@ void GameEngine::Run() {
 
 
         // 3. Update game objects
-        //? for (obj : game_objects) { obj->update() }
+        for( auto obj : *gameObjects ) {
+            obj->Update();                  // TODO: Figure out GameContext
+        }
 
         // 4. Process collision events
         /* Example Code from Project1a doc
