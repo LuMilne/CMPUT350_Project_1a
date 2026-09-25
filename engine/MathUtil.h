@@ -95,16 +95,26 @@ struct Line {
 
     Line(Point2D p1 = {0, 0}, Point2D p2 = {0, 0}) : p1(p1), p2(p2) {}
     Line(float x1, float y1, float x2, float y2) : p1(x1, y1), p2(x2, y2) {}
+
     float Length() const {
-        // TODO: write this code
-        return 0;
+        return p1.Distance(p2);
     }
+
+    //((a dot b)/(b dot b)) * b then add p1 to get the point
+    //a = p1 to p, b = p1 to p2 (line)
     Point2D ClosestPoint(const Point2D &p) const {
-        // TODO: write this code
-        return p;
+        Point2D a = p - p1;
+        Point2D b = p2 - p1;
+
+        return ((a.Dot(b)/b.Dot(b)) * (b)) + p1;
     }
+
+    //Checks if crossingPoint is both on line and other. If its on both than return true
     bool Crosses(Line other, Point2D &crossingPoint) const {
-        // TODO: write this code
+        if (p1.Distance(crossingPoint) + p2.Distance(crossingPoint) == p1.Distance(p2)
+            && other.p1.Distance(crossingPoint) + other.p2.Distance(crossingPoint) == other.p1.Distance(other.p2)) {
+            return true;
+        }
         return false;
     }
 };
