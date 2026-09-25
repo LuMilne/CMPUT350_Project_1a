@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 namespace CMPUT350 {
 
@@ -112,7 +113,8 @@ struct Line {
     //Checks if crossingPoint is both on line and other. If its on both than return true
     bool Crosses(Line other, Point2D &crossingPoint) const {
         if (p1.Distance(crossingPoint) + p2.Distance(crossingPoint) == p1.Distance(p2)
-            && other.p1.Distance(crossingPoint) + other.p2.Distance(crossingPoint) == other.p1.Distance(other.p2)) {
+            && other.p1.Distance(crossingPoint) + other.p2.Distance(crossingPoint) == other.p1.Distance(other.p2))
+        {
             return true;
         }
         return false;
@@ -151,35 +153,82 @@ struct Rect {
     Rect(Point2D center, float radius)
         : topLeft(center.x - radius, center.y - radius), width(2 * radius), height(2 * radius) {}
 
+    /*Build a new rect that contains both rects
+     *Need: Top (highest x), Left (Left most y), width, height
+     *height and width would be top - bottom and right - left
+     *since origin is top left we scale downwards IMPORTANT
+     */
     Rect &operator|=(const Rect &other) {
-        // TODO: write this code
+        float top = std::min(topLeft.x, other.topLeft.x);
+        float left= std::min(topLeft.y, other.topLeft.y);
+        float bottom = std::max(topLeft.x + width, other.topLeft.x + width);
+        float right = std::max(topLeft.y + width, other.topLeft.y + width);
+
+        width = right - left;
+        height = bottom - top;
+
+        topLeft = Point2D(top, left);
         return *this;
     }
+
     Rect &operator|=(const Point2D &other) {
-        // TODO: write this code
+        float top = std::min(topLeft.x, other.x);
+        float left= std::min(topLeft.y, other.y);
+        float bottom = std::max(topLeft.x + width, other.x + width);
+        float right = std::max(topLeft.y + width, other.y + width);
+
+        width = right - left;
+        height = bottom - top;
+
+        topLeft = Point2D(top, left);
         return *this;
     }
     Rect &operator|=(const Line &other) {
-        // TODO: write this code
+        float top = std::min({topLeft.x, other.p1.x, other.p2.x});
+        float left= std::min({topLeft.y, other.p1.y, other.p2.y});
+        float bottom = std::max({topLeft.x + width, other.p1.x + width, other.p2.x + width});
+        float right = std::max({topLeft.y + width, other.p1.y + width, other.p2.y + width});
+
+        width = right - left;
+        height = bottom - top;
+
+        topLeft = Point2D(top, left);
         return *this;
     }
     Rect &operator&=(const Rect &other) {
-        // TODO: write this code
+        float top = std::max(topLeft.x, other.topLeft.x);
+        float left= std::max(topLeft.y, other.topLeft.y);
+        float bottom = std::min(topLeft.x + width, other.topLeft.x + width);
+        float right = std::min(topLeft.y + width, other.topLeft.y + width);
+
+        width = right - left;
+        height = bottom - top;
+
+        topLeft = Point2D(top, left);
         return *this;
     }
     Rect &operator+=(const Point2D &other) {
-        // TODO: write this code
+        topLeft += other;
         return *this;
     }
     Rect operator+(const Point2D &other) const {
-        // TODO: write this code
-        return *this;
+        Rect temp_rect = *this;
+        temp_rect += other;
+        return temp_rect;
     }
     void Inset(int inset) {
-        // TODO: write this code
+        topLeft.x += inset;
+        topLeft.y += inset;
+        width -= inset;
+        height -= inset;
     }
+
     bool IsInside(const Point2D &p) const {
-        // TODO: write this code
+        if (topLeft.x <= p.x && topLeft.y <= p.y
+            && topLeft.x + width >= p.x && topLeft.y + height >= p.y)
+        {
+            return true;
+        }
         return false;
     }
 };
