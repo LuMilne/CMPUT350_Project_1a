@@ -47,7 +47,6 @@ struct Point2D {
         return *this;
     }
     bool operator==(const Point2D &other) const {
-        // TODO: write this code
         return ((x == other.x) && (y == other.y));
     }
     Point2D &operator*=(const int &scalar) {
