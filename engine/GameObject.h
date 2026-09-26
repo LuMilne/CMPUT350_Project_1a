@@ -4,7 +4,7 @@
 #include <string_view>
 
 namespace CMPUT350 {
-
+class Bullet;
 class GameContext;
 
 class GameObject {
@@ -36,23 +36,83 @@ public:
     }
 
     void Update(GameContext *context) override {
-        player_position = SetPosition(GetPosition(), velocity);
+
+        if (player_position.x + velocity < context->ScreenContext->GetWindowWidth() && player_position.x + velocity > 0) {
+            SetPosition(player_position, velocity);
+        }else if (player_position.x + velocity == context->ScreenContext->GetWindowWidth() || player_position.x + velocity == 0) {
+            SetPosition(player_position, velocity);
+            velocity = 0;
+        }
+
+
+        //TODO: time needs to really be something like context.GetShootTimer(). time IS CURRENTLY PLACEHOLDER
+        float time = 1.0f;
+        if (shooting && time >= shoot_cooldown) {
+            for (auto &bullet : bullet_pool) {
+                if (bullet.expired()) {
+                    
+                }
+            }
+        }
+
+        if (!IsAlive()) {
+            Kill();
+        }
+
+        //Bullet update check
+        //IsAlive check
+
+
     }
 
-    Point2D GetPosition() {
+    bool HandleKeyEvent(GameContext *context, char key) override {
+        if (key == 'a') {
+            velocity = -2;
+            return true;
+        }
+        if (key == 'd') {
+            velocity = 2;
+            return true;
+        }
+
+        if (key == ' ') {
+            shooting = true;
+            return true;
+        }
+
+        shooting = false;
+        return false;
+    }
+
+    Point2D GetPosition() const {
         return player_position;
     }
 
-    Point2D SetPosition(Point2D current_position, float new_velocity) {
-        player_position = current_position + new_velocity;
+    void SetPosition(const Point2D current_position, const float new_velocity) {
+        player_position.x = current_position.x + new_velocity;
+
     }
 
 
 private:
     //Negative left, Positive Right
-    float velocity;
+    float velocity = 0;
+    bool shooting = false;
     Point2D player_position;
     std::string_view tag = "Player";
+    const float shoot_cooldown = 0.1f;
+    std::array<std::weak_ptr<Bullet>, 2> bullet_pool;
+};
+
+
+
+class Bullet : public GameObject {
+    public:
+    ~Bullet() override = default;
+
+    private:
+    float velocity;
+    Point2D bullet_position;
 };
 
 
