@@ -10,6 +10,7 @@ public:
 
     // GameObject Functions
     void Initialize(CMPUT350::GameContext* context) override;
+    void SetPosition(CMPUT350::Point2D point2_d, float velocity);
     void Update(CMPUT350::GameContext* context) override;
     void LateUpdate(CMPUT350::GameContext* context) override;
     bool HandleKeyEvent(CMPUT350::GameContext* context, char key) override;
@@ -25,6 +26,14 @@ public:
     void CollisionEnter(const std::shared_ptr<CMPUT350::CollisionObject>& obj) override;
     const CMPUT350::Rect& GetBounds() override;
 
+private:
+    //Negative left, Positive Right
+    float velocity = 0;
+    bool alive;
+    CMPUT350::Point2D player_position;
+    std::string_view tag = "Player";
+    int shoot_cooldown = 6;
+    bool shooting = false;
     // Player size: 40*40 pixels
 };
 

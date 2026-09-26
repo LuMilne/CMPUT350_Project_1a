@@ -139,7 +139,7 @@ struct Rect {
     float width, height;
 
     Rect(float left, float top, float width, float height)
-        : topLeft(Point2D(top, left)), width(width), height(height) {}
+        : topLeft(Point2D(left, top)), width(width), height(height) {}
 
     Rect(Point2D tl = {0, 0}, int w = 0, int h = 0) : topLeft(tl), width(w), height(h) {}
 
@@ -158,52 +158,52 @@ struct Rect {
      *since origin is top left we scale downwards IMPORTANT
      */
     Rect &operator|=(const Rect &other) {
-        float top = std::min(topLeft.x, other.topLeft.x);
-        float left= std::min(topLeft.y, other.topLeft.y);
-        float bottom = std::max(topLeft.x + width, other.topLeft.x + width);
-        float right = std::max(topLeft.y + width, other.topLeft.y + width);
+        float left = std::min(topLeft.x, other.topLeft.x);
+        float top= std::min(topLeft.y, other.topLeft.y);
+        float right = std::max(topLeft.x + width, other.topLeft.x + width);
+        float bottom = std::max(topLeft.y + height, other.topLeft.y + height);
 
         width = right - left;
         height = bottom - top;
 
-        topLeft = Point2D(top, left);
+        topLeft = Point2D(left, top);
         return *this;
     }
 
     Rect &operator|=(const Point2D &other) {
-        float top = std::min(topLeft.x, other.x);
-        float left= std::min(topLeft.y, other.y);
-        float bottom = std::max(topLeft.x + width, other.x + width);
-        float right = std::max(topLeft.y + width, other.y + width);
+        float left = std::min(topLeft.x, other.x);
+        float top= std::min(topLeft.y, other.y);
+        float right = std::max(topLeft.x + width, other.x + width);
+        float bottom = std::max(topLeft.y + height, other.y + height);
 
         width = right - left;
         height = bottom - top;
 
-        topLeft = Point2D(top, left);
+        topLeft = Point2D(left, top);
         return *this;
     }
     Rect &operator|=(const Line &other) {
-        float top = std::min({topLeft.x, other.p1.x, other.p2.x});
-        float left= std::min({topLeft.y, other.p1.y, other.p2.y});
-        float bottom = std::max({topLeft.x + width, other.p1.x + width, other.p2.x + width});
-        float right = std::max({topLeft.y + width, other.p1.y + width, other.p2.y + width});
+        float left = std::min({topLeft.x, other.p1.x, other.p2.x});
+        float top= std::min({topLeft.y, other.p1.y, other.p2.y});
+        float right = std::max({topLeft.x + width, other.p1.x + width, other.p2.x + width});
+        float bottom = std::max({topLeft.y + height, other.p1.y + height, other.p2.y + height});
 
         width = right - left;
         height = bottom - top;
 
-        topLeft = Point2D(top, left);
+        topLeft = Point2D(left, top);
         return *this;
     }
     Rect &operator&=(const Rect &other) {
-        float top = std::max(topLeft.x, other.topLeft.x);
-        float left= std::max(topLeft.y, other.topLeft.y);
-        float bottom = std::min(topLeft.x + width, other.topLeft.x + width);
-        float right = std::min(topLeft.y + width, other.topLeft.y + width);
+        float left = std::max(topLeft.x, other.topLeft.x);
+        float top= std::max(topLeft.y, other.topLeft.y);
+        float right = std::min(topLeft.x + width, other.topLeft.x + width);
+        float bottom = std::min(topLeft.y + height, other.topLeft.y + height);
 
         width = right - left;
         height = bottom - top;
 
-        topLeft = Point2D(top, left);
+        topLeft = Point2D(left, top);
         return *this;
     }
     Rect &operator+=(const Point2D &other) {
